@@ -406,7 +406,6 @@ import { fetchServerDetail, fetchAllHistory, fetchConfig, formatBytes, isAdminLo
 import { getTrafficUsageBytes } from '../composables/useServerCardData'
 import { getPublicAssetUrl } from '../utils/config.js'
 import Chart from 'chart.js/auto'
-import 'chartjs-adapter-date-fns'
 import { t, currentLang, useTranslation } from '../utils/i18n'
 import { CHART, HISTORY } from '../utils/constants'
 import { formatDateTime, normalizeTimestamp as normalizeMetricTimestamp } from '../utils/time.js'
