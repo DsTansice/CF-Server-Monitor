@@ -468,7 +468,6 @@ const getAgentVersionClass = (version) => {
   return normalizeVersion(version) === latest ? 'text-green' : 'text-red'
 }
 const getServerQuery = () => props.selectedApiIndex ? `?apiIndex=${props.selectedApiIndex}` : ''
-// 详情页是公开页面，走域名根路径入口 /#/server/:id：留在 /admin 下会撞上入口归一化，
-// 刷新时被改写回后台首页
+// 详情页是公开页面，走域名根路径入口 /#/server/:id
 const getServerDetailHref = (server) => `/#/server/${encodeURIComponent(server.id)}${getServerQuery()}`
 </script>

@@ -1,5 +1,4 @@
 import { getApiBases } from './config'
-import { ADMIN_ENTRY_URL, isAdminEntryHash } from '../router/adminEntryUrl'
 
 const DEFAULT_ERROR_MESSAGES = {
   401: 'Unauthorized',
@@ -22,13 +21,7 @@ const redirectToAdminLogin = () => {
 
   const adminPath = getAdminPath()
   if (window.location.pathname === adminPath || window.location.pathname.startsWith(`${adminPath}/`)) {
-    // 只有后台页面 reload 才有意义（重新渲染出登录态）。/admin 下的详情页入口
-    // /admin#/server/:id 也会被这条分支命中，而 reload 只会把详情页再渲染一遍、
-    // 再吃一次 401，变成死循环；这种时候收敛回后台入口，交给登录页接管
-    if (!isAdminEntryHash(window.location.hash)) {
-      window.location.replace(ADMIN_ENTRY_URL)
-      return
-    }
+    // 401 时 handleResponse 已清除 jwt_token，reload 后后台落到登录页，不会再次触发 401
     window.location.reload()
     return
   }
