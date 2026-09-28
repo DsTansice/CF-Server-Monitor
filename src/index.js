@@ -206,7 +206,8 @@ export default {
       const search = target.search;
       target.pathname = '/admin';
       target.search = '';
-      target.hash = `admin${search}`;
+      // 与前端入口地址统一为 #/admin 形式；旧式 #admin 由前端归一化兼容
+      target.hash = `/admin${search}`;
       return Response.redirect(target.toString(), 302);
     }
 

@@ -4,7 +4,7 @@
 >
 > 本文档只保留第三方主题可用的公开 API、WebSocket 和静态目录约定，不介绍后台管理接口。
 >
-> 管理后台固定由默认主题接管；主题中的管理入口只能跳转到 `/admin#admin`。
+> 管理后台固定由默认主题接管；主题中的管理入口应跳转到 `/admin#/admin`（旧式 `/admin#admin` 仍然兼容，后台入口会自动归一化）。
 
 **Base URL**：`https://<your-worker-domain>`
 
@@ -105,7 +105,7 @@ my-theme/
 
 - 首页：`/#/` 或 `/#`
 - 详情页：`/#/server/:id`
-- 管理后台：链接到 `/admin#admin`，由内置默认主题接管，第三方主题不得实现管理页
+- 管理后台：链接到 `/admin#/admin`（旧式 `/admin#admin` 兼容），由内置默认主题接管，第三方主题不得实现管理页
 
 ### 0.3 版本升级提示
 
@@ -156,7 +156,7 @@ my-theme/
 - `/api/ws`、`/api/config`（不带 Turnstile Header 时）无需验证
 - `/api/config` 带 `X-Turnstile-Token` 或 `X-Turnstile-Verified` 时会进入验证流程，并通过 `verified` / `turnstile_verified` 返回验证结果
 - `/api/ws` 不参与 Turnstile 验证，但非公开站点仍需要通过 WebSocket JWT 认证
-- `turnstile_enabled` 是全局 API 验证开关，`turnstile_login_enabled` 是内置后台登录页验证开关；第三方主题不实现登录页，管理入口跳转 `/admin#admin`
+- `turnstile_enabled` 是全局 API 验证开关，`turnstile_login_enabled` 是内置后台登录页验证开关；第三方主题不实现登录页，管理入口跳转 `/admin#/admin`
 
 ***
 
