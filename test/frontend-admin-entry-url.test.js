@@ -3,6 +3,7 @@ import test from 'node:test'
 
 import {
   ADMIN_ENTRY_URL,
+  isAdminEntryHash,
   isAdminPath,
   normalizeAdminEntryUrl,
   resolveAdminEntryUrl
@@ -48,7 +49,27 @@ test('/admin 与 Access、OAuth 回跳都归一化为标准后台地址', () => 
   assert.equal(resolveAdminEntryUrl({ pathname: '/admin', search: '?state=abc&redirect_url=%2Fadmin' }), '/admin#/admin?state=abc&redirect_url=%2Fadmin')
   assert.equal(resolveAdminEntryUrl({ pathname: '/admin', search: '?apiIndex=1' }), '/admin#/admin?apiIndex=1')
   assert.equal(resolveAdminEntryUrl({ pathname: '/admin', hash: '#/' }), '/admin#/admin')
-  assert.equal(resolveAdminEntryUrl({ pathname: '/admin', hash: '#/server/1?apiIndex=1' }), '/admin#/admin')
+})
+
+test('/admin 下的详情页入口不被改回后台首页（刷新 / 新标签页打开都留在详情页）', () => {
+  assert.equal(resolveAdminEntryUrl({ pathname: '/admin', hash: '#/server/1' }), null)
+  assert.equal(resolveAdminEntryUrl({ pathname: '/admin', hash: '#/server/1?apiIndex=1' }), null)
+  // 裸 query 仍搬进 hash，否则 hash history 会把它吞进 base 而丢失
+  assert.equal(resolveAdminEntryUrl({ pathname: '/admin', search: '?apiIndex=1', hash: '#/server/2' }), '/admin#/server/2?apiIndex=1')
+  assert.equal(resolveAdminEntryUrl({ pathname: '/admin/', hash: '#/server/2' }), '/admin#/server/2')
+  // 只有详情页这一段被保留，其余 hash 依旧收敛到后台入口
+  assert.equal(resolveAdminEntryUrl({ pathname: '/admin', hash: '#/server' }), '/admin#/admin')
+  assert.equal(resolveAdminEntryUrl({ pathname: '/admin', hash: '#/serverx/1' }), '/admin#/admin')
+})
+
+test('isAdminEntryHash 判定 /admin 下渲染的是不是后台（决定能否安全 reload）', () => {
+  assert.equal(isAdminEntryHash('#/admin'), true)
+  assert.equal(isAdminEntryHash('#/admin?apiIndex=1'), true)
+  assert.equal(isAdminEntryHash('#admin'), true)
+  assert.equal(isAdminEntryHash('#admin?apiIndex=1'), true)
+  assert.equal(isAdminEntryHash('#/server/1'), false)
+  assert.equal(isAdminEntryHash('#/'), false)
+  assert.equal(isAdminEntryHash(''), false)
 })
 
 test('旧式 #admin 入口（第三方主题约定）被兼容并收敛到 #/admin', () => {
@@ -79,8 +100,7 @@ test('归一化结果一律解析为 /admin 路由，且不再残留裸 query', 
     { pathname: '/admin', search: '?apiIndex=1', hash: '#admin' },
     { pathname: '/admin', hash: '#admin' },
     { pathname: '/admin', hash: '#admin?apiIndex=1' },
-    { pathname: '/admin', hash: '#/admin?apiIndex=1' },
-    { pathname: '/admin', hash: '#/server/1?apiIndex=1' }
+    { pathname: '/admin', hash: '#/admin?apiIndex=1' }
   ]
 
   for (const loc of cases) {
@@ -92,6 +112,21 @@ test('归一化结果一律解析为 /admin 路由，且不再残留裸 query', 
     // 留在 search 里的 ?github_bound=1 之后清不掉
     if (queryIndex > -1) assert.ok(queryIndex > hashIndex, `query 必须在 hash 内: ${target}`)
     assert.match(resolveHashLocation(target), /^\/admin(\?|$)/, target)
+  }
+})
+
+test('详情页入口归一化后解析为 /server/:id 路由，且不再残留裸 query', () => {
+  const cases = [
+    { pathname: '/admin', hash: '#/server/1' },
+    { pathname: '/admin', hash: '#/server/1?apiIndex=1' },
+    { pathname: '/admin', search: '?apiIndex=1', hash: '#/server/2' }
+  ]
+
+  for (const loc of cases) {
+    const target = resolveAdminEntryUrl(loc) ?? currentUrl(loc)
+    const queryIndex = target.indexOf('?')
+    if (queryIndex > -1) assert.ok(queryIndex > target.indexOf('#'), `query 必须在 hash 内: ${target}`)
+    assert.match(resolveHashLocation(target), /^\/server\/\d+(\?|$)/, target)
   }
 })
 
@@ -113,6 +148,7 @@ test('normalizeAdminEntryUrl 只在需要改写时 replaceState，且保留 null
   assert.deepEqual(run({ pathname: '/admin', search: '?github_bound=1' }), [{ state: null, url: '/admin#/admin?github_bound=1' }])
   assert.deepEqual(run({ pathname: '/admin', hash: '#admin' }), [{ state: null, url: '/admin#/admin' }])
   assert.deepEqual(run({ pathname: '/admin', hash: '#/admin' }), [])
+  assert.deepEqual(run({ pathname: '/admin', hash: '#/server/1' }), [])
   assert.deepEqual(run({ pathname: '/', hash: '#/' }), [])
 })
 

@@ -6,8 +6,9 @@
  * popstate，Router 不会跟进。结果是"地址栏写着后台、渲染的却是看板"，看板在私有站点拿到 401 后
  * 又按 pathname 判定"已在后台"而 reload，形成刷新循环。
  *
- * 归一化后形成不变量：只要 pathname 是 /admin，hash 必定是 #/admin*，
- * 于是 401 处理器的 pathname 判定成立，刷新必然落回后台而不会循环。
+ * 归一化后形成不变量：只要 pathname 是 /admin，hash 必定是 #/admin* 或 #/server/:id*
+ * （后者是后台列表点开的详情页入口，与根路径的 /#/server/:id 等价）。
+ * 于是 /admin 下只会渲染后台或详情页，不会再出现"地址栏写着后台、渲染的却是看板"。
  *
  * 兼容说明：第三方主题的入口按 theme-develop.md 的历史约定写作 /admin#admin，
  * 该旧式同样解析为后台路由，这里接受它并把地址栏收敛到 #/admin 形式。
@@ -29,6 +30,23 @@ export const isAdminPath = (pathname) => {
 const isAdminHash = (hash) => hash === ADMIN_HASH || hash.startsWith(`${ADMIN_HASH}?`)
 const isLegacyAdminHash = (hash) => hash === '#admin' || hash.startsWith('#admin?')
 
+// /admin 下渲染的到底是后台还是别的页面：详情服务等处按此判断能不能安全地 reload
+export const isAdminEntryHash = (hash) => {
+  const value = hash ?? (typeof window !== 'undefined' ? window.location.hash : '')
+  return isAdminHash(value) || isLegacyAdminHash(value)
+}
+
+// 后台列表点开的详情页 /admin#/server/:id：它和后台首页一样是 router 里的真实路由，
+// 刷新或在新标签页打开时必须留在详情页，不能被收回到后台首页
+const SERVER_HASH_PREFIX = '#/server/'
+
+const splitHashQuery = (hash) => {
+  const queryIndex = hash.indexOf('?')
+  return queryIndex < 0
+    ? { path: hash, query: '' }
+    : { path: hash.slice(0, queryIndex), query: hash.slice(queryIndex) }
+}
+
 /**
  * 计算后台入口需要归一化成的 URL。
  * @returns {string|null} 需要改写时返回目标 URL，已经处于标准形式时返回 null
@@ -36,17 +54,28 @@ const isLegacyAdminHash = (hash) => hash === '#admin' || hash.startsWith('#admin
 export const resolveAdminEntryUrl = ({ pathname = '', search = '', hash = '' } = {}) => {
   if (!isAdminPath(pathname)) return null
 
-  // 旧式 hash 的后缀是 ?apiIndex=1 之类的查询参数，必须保留。
-  // 无 hash、以及 pathname 是 /admin 时的其它 hash 都留空后缀，一律按后台入口处理：
-  // 看板与详情页有各自的域名根路径入口（/#/、/#/server/:id），不挂在 /admin 下
+  let route = ADMIN_HASH
   let suffix = ''
-  if (isAdminHash(hash)) suffix = hash.slice(ADMIN_HASH.length)
-  else if (isLegacyAdminHash(hash)) suffix = hash.slice('#admin'.length)
+
+  if (hash.startsWith(SERVER_HASH_PREFIX)) {
+    // 详情页入口：/admin#/server/:id 与 /#/server/:id 都是合法入口，连 query 一起原样保留
+    const detail = splitHashQuery(hash)
+    route = detail.path
+    suffix = detail.query
+  } else if (isAdminHash(hash)) {
+    // 旧式 hash 的后缀是 ?apiIndex=1 之类的查询参数，必须保留。
+    // 无 hash、以及 pathname 是 /admin 时的其它 hash 都留空后缀，一律按后台入口处理：
+    // 看板只有域名根路径入口（/#/），不挂在 /admin 下
+    suffix = hash.slice(ADMIN_HASH.length)
+  } else if (isLegacyAdminHash(hash)) {
+    suffix = hash.slice('#admin'.length)
+  }
+
   // 查询参数整体搬进 hash：hash history 会把 location.search 并入 base，
   // 而它之后只用 '#'+path 写地址栏，留在 search 里的 ?github_bound=1 永远清不掉
   if (search && !suffix) suffix += search
 
-  const target = `${ADMIN_PATH}${ADMIN_HASH}${suffix}`
+  const target = `${ADMIN_PATH}${route}${suffix}`
   return target === `${pathname}${search}${hash}` ? null : target
 }
 
