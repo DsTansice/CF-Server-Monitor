@@ -1178,7 +1178,7 @@ Header：`X-Turnstile-Token: <token>`（当 `site_options.turnstile_enabled` 或
 
 > `api_secret` 仅在 `get_settings` 中返回，方便前端展示/复制。
 >
-> ~~`settings` 包含 `jwt_secret`。~~ **2026-09-19 修订**：后端会从返回对象中剔除 `jwt_secret`、`password` 和 GitHub Client Secret；其他敏感值（如 Cloudflare Token、Turnstile Secret）仍可能存在，必须使用 HTTPS 并限制管理 Token。
+> ~~`settings` 包含 `jwt_secret`。~~ **2026-09-19 修订**：后端会从返回对象中剔除 `jwt_secret`、`password`；其他敏感值（如 Cloudflare Token、Turnstile Secret）仍可能存在，必须使用 HTTPS 并限制管理 Token。
 
 ***
 

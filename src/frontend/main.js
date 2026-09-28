@@ -84,7 +84,6 @@ async function fetchConfig() {
         turnstile_enabled: false,
         turnstile_login_enabled: false,
         turnstile_site_key: '',
-        github_oauth_enabled: false,
         display_mode: 'bar',
         preferred_theme: 'auto',
         default_language: 'auto',
@@ -103,7 +102,6 @@ async function fetchConfig() {
         turnstile_enabled: false,
         turnstile_login_enabled: false,
         turnstile_site_key: '',
-        github_oauth_enabled: false,
         display_mode: 'bar',
         preferred_theme: 'auto',
         default_language: 'auto',
@@ -119,7 +117,6 @@ async function fetchConfig() {
     const turnstileEnabled = isTurnstileValueEnabled(data.turnstile_enabled)
     const turnstileLoginEnabled = isTurnstileValueEnabled(data.turnstile_login_enabled)
     const turnstileSiteKey = data.turnstile_site_key || ''
-    const githubOAuthEnabled = data.github_oauth_enabled === true || data.github_oauth_enabled === 'true'
     const version = data.version || ''
     const lastWorkersVersion = data.last_workers_version || ''
     const lastAgentVersion = data.last_agent_version || ''
@@ -143,7 +140,6 @@ async function fetchConfig() {
       turnstile_enabled: turnstileEnabled,
       turnstile_login_enabled: turnstileLoginEnabled,
       turnstile_site_key: turnstileSiteKey,
-      github_oauth_enabled: githubOAuthEnabled,
       custom_ct_name: data.custom_ct_name || '电信',
       custom_cu_name: data.custom_cu_name || '联通',
       custom_cm_name: data.custom_cm_name || '移动',
@@ -172,7 +168,6 @@ async function fetchConfig() {
     turnstile_enabled: false,
     turnstile_login_enabled: false,
     turnstile_site_key: '',
-    github_oauth_enabled: false,
     custom_ct_name: '电信', custom_cu_name: '联通', custom_cm_name: '移动', custom_bd_name: 'BGP',
     node_1_name: 'Node 1', node_2_name: 'Node 2', node_3_name: 'Node 3', node_4_name: 'Node 4',
     display_mode: 'bar',

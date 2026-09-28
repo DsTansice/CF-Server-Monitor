@@ -72,7 +72,7 @@ export const resolveAdminEntryUrl = ({ pathname = '', search = '', hash = '' } =
   }
 
   // 查询参数整体搬进 hash：hash history 会把 location.search 并入 base，
-  // 而它之后只用 '#'+path 写地址栏，留在 search 里的 ?github_bound=1 永远清不掉
+  // 而它之后只用 '#'+path 写地址栏，留在 search 里的 ?foo=1 永远清不掉
   if (search && !suffix) suffix += search
 
   const target = `${ADMIN_PATH}${route}${suffix}`

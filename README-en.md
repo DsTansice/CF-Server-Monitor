@@ -99,7 +99,7 @@ Core flow:
 
 Recent changes:
 
-- `2.8.6`: Added GitHub login, WSS frontend subscription with 250ms batch reporting, added SMTP notification channel, added monthly traffic threshold alert, removed legacy database compatibility, added Docker installation method.
+- `2.8.6`: WSS frontend subscription with 250ms batch reporting, added SMTP notification channel, added monthly traffic threshold alert, removed legacy database compatibility, added Docker installation method.
 - `2.8.5`: Added custom Ping node names, ICMP mode, optimized WSS response logic, API interface optimization, and optimized frontend. Also added 4 default Ping nodes.
 - `2.8.4`: Added Agent WSS reporting and active hours. Agents use POST outside selected hours to reduce Do duration, and this requires Agent `v1.0.10+`. Also added account Do usage display with optimized Do broadcast requests when no frontend subscription exists to reduce idle quota consumption, added custom Webhook channel in notification settings, and added frontend WSS timeout configuration.
 - `2.8.3`: Added disk IO metrics, switched the default Agent to Go, and added realtime latency / packet-loss windows.
@@ -406,15 +406,6 @@ Cloudflare Turnstile can be enabled from the admin panel to reduce abuse of publ
 ### CORS
 
 Same-origin access is recommended by default. If you use an external static frontend or multi-site aggregation, add trusted origins to `CORS_ALLOWED_ORIGINS`.
-
-### GitHub Login
-
-1. Create an [OAuth App](https://github.com/settings/developers) under GitHub `Settings → Developer settings → OAuth Apps`.
-2. Enter its Client ID and Client Secret under Admin Login Settings, then save the configuration.
-3. Copy the exact `Authorization callback URL` shown by CFSM into the GitHub OAuth App.
-4. While signed in with the admin password, click Bind GitHub Account and authorize it. CFSM stores the account's immutable numeric GitHub ID, and only that account can use GitHub login afterward.
-
-The GitHub OAuth configuration and binding are stored in the existing D1 `site_options` JSON and do not require a schema upgrade. The Client Secret is not returned by the settings read API; leave it blank on later saves to preserve the stored value. Rebinding requires an authenticated admin session. Keep password login enabled as a recovery path.
 
 ### CSP
 

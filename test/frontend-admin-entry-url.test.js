@@ -41,11 +41,10 @@ test('后台入口归一化只在 /admin 前缀生效', () => {
   assert.equal(resolveAdminEntryUrl({ pathname: '/repo/', hash: '#/admin' }), null)
 })
 
-test('/admin 与 Access、OAuth 回跳都归一化为标准后台地址', () => {
+test('/admin 与带查询参数的回跳都归一化为标准后台地址', () => {
   assert.equal(resolveAdminEntryUrl({ pathname: '/admin' }), '/admin#/admin')
   assert.equal(resolveAdminEntryUrl({ pathname: '/admin/' }), '/admin#/admin')
-  assert.equal(resolveAdminEntryUrl({ pathname: '/admin', search: '?github_bound=1' }), '/admin#/admin?github_bound=1')
-  assert.equal(resolveAdminEntryUrl({ pathname: '/admin', search: '?github_error=not_allowed' }), '/admin#/admin?github_error=not_allowed')
+  assert.equal(resolveAdminEntryUrl({ pathname: '/admin', search: '?foo=1' }), '/admin#/admin?foo=1')
   assert.equal(resolveAdminEntryUrl({ pathname: '/admin', search: '?state=abc&redirect_url=%2Fadmin' }), '/admin#/admin?state=abc&redirect_url=%2Fadmin')
   assert.equal(resolveAdminEntryUrl({ pathname: '/admin', search: '?apiIndex=1' }), '/admin#/admin?apiIndex=1')
   assert.equal(resolveAdminEntryUrl({ pathname: '/admin', hash: '#/' }), '/admin#/admin')
@@ -90,13 +89,13 @@ test('前缀相似的非后台 hash 不被误当成后台后缀（否则会拼�
 test('已是标准形式时幂等，不再改写地址栏', () => {
   assert.equal(resolveAdminEntryUrl({ pathname: '/admin', hash: '#/admin' }), null)
   assert.equal(resolveAdminEntryUrl({ pathname: '/admin', hash: '#/admin?apiIndex=1' }), null)
-  assert.equal(resolveAdminEntryUrl({ pathname: '/admin', hash: '#/admin?github_bound=1' }), null)
+  assert.equal(resolveAdminEntryUrl({ pathname: '/admin', hash: '#/admin?foo=1' }), null)
 })
 
 test('归一化结果一律解析为 /admin 路由，且不再残留裸 query', () => {
   const cases = [
     { pathname: '/admin' },
-    { pathname: '/admin', search: '?github_bound=1' },
+    { pathname: '/admin', search: '?foo=1' },
     { pathname: '/admin', search: '?apiIndex=1', hash: '#admin' },
     { pathname: '/admin', hash: '#admin' },
     { pathname: '/admin', hash: '#admin?apiIndex=1' },
@@ -109,7 +108,7 @@ test('归一化结果一律解析为 /admin 路由，且不再残留裸 query', 
     assert.ok(hashIndex > -1, `后台入口必须带 hash: ${target}`)
     const queryIndex = target.indexOf('?')
     // 归一化后地址栏不再有裸 query：hash history 会把 pathname+search 吞进 base，
-    // 留在 search 里的 ?github_bound=1 之后清不掉
+    // 留在 search 里的 ?foo=1 之后清不掉
     if (queryIndex > -1) assert.ok(queryIndex > hashIndex, `query 必须在 hash 内: ${target}`)
     assert.match(resolveHashLocation(target), /^\/admin(\?|$)/, target)
   }
@@ -145,7 +144,7 @@ test('normalizeAdminEntryUrl 只在需要改写时 replaceState，且保留 null
     return calls
   }
 
-  assert.deepEqual(run({ pathname: '/admin', search: '?github_bound=1' }), [{ state: null, url: '/admin#/admin?github_bound=1' }])
+  assert.deepEqual(run({ pathname: '/admin', search: '?foo=1' }), [{ state: null, url: '/admin#/admin?foo=1' }])
   assert.deepEqual(run({ pathname: '/admin', hash: '#admin' }), [{ state: null, url: '/admin#/admin' }])
   assert.deepEqual(run({ pathname: '/admin', hash: '#/admin' }), [])
   assert.deepEqual(run({ pathname: '/admin', hash: '#/server/1' }), [])
