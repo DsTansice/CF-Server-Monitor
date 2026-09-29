@@ -15,7 +15,7 @@
 [![GitHub Forks](https://img.shields.io/github/forks/huilang-me/CF-Server-Monitor?style=flat-square&logo=github)](https://github.com/huilang-me/CF-Server-Monitor/forks)
 [![License](https://img.shields.io/badge/License-MIT-16a34a?style=flat-square)](#许可证)
 
-[在线演示](https://demo.huilang.me/) · [API 文档](API.md) · [Go 探针文档](https://github.com/huilang-me/cfsm-agent) · [主题开发](theme-develop.md)
+[在线演示](https://demo.huilang.me/) · [API 文档](API.md) · [Go 探针文档](https://github.com/huilang-me/cfsm-agent) · [主题开发](theme-develop.md) · [主题开发 AI 提示词](theme-ai-prompt.md)
 
 </div>
 
@@ -428,7 +428,10 @@ smtp://<用户名>:<密码>@<host>:<port>?from=<发件人>&to=<收件人1,收件
 - 第三方主题 GitHub tree 地址
 - 管理员预览主题
 
-第三方主题只反代主题仓库中的 `index.html` 与 `assets/`，管理后台仍使用内置主题。开发自定义主题请参考 [theme-develop.md](theme-develop.md)。
+第三方主题只反代主题仓库中的 `index.html` 与 `assets/`，管理后台仍使用内置主题。开发自定义主题请参考：
+
+- [theme-ai-prompt.md](theme-ai-prompt.md)：主题开发 AI 提示词，开发者直接整段粘贴给 AI 编码助手使用，内含数据流、D1 消耗铁律和完工自查清单
+- [theme-develop.md](theme-develop.md)：完整 API 字段定义与鉴权说明
 
 ## 升级与维护
 
@@ -592,6 +595,7 @@ CF-Server-Monitor/
 ├── test/                    # 本地测试和模拟数据工具
 ├── API.md                   # REST / WebSocket API 文档
 ├── theme-develop.md         # 第三方主题开发文档
+├── theme-ai-prompt.md       # 主题开发 AI 提示词（粘贴给 AI 使用）
 ├── wrangler.toml            # 本地 Wrangler 配置
 └── version.json             # Worker / Agent 版本
 ```
@@ -675,6 +679,7 @@ echo <CF_CDN_IP> <你的探针域名> | sudo tee -a /etc/hosts
 - [API.md](API.md)：REST API、WebSocket、鉴权、错误码和数据结构
 - [https://github.com/huilang-me/cfsm-agent](cfsm-agent)：Go 版本 Agent 配置、升级、日志与排障
 - [theme-develop.md](theme-develop.md)：第三方主题开发
+- [theme-ai-prompt.md](theme-ai-prompt.md)：主题开发 AI 提示词，直接粘贴给 AI 即可按项目规范开发主题
 - [test/README.md](test/README.md)：本地模拟数据和测试流程
 
 ## 社区

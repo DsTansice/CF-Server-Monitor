@@ -15,7 +15,7 @@ A lightweight multi-server monitoring dashboard built on Cloudflare Workers, D1,
 [![GitHub Forks](https://img.shields.io/github/forks/huilang-me/CF-Server-Monitor?style=flat-square&logo=github)](https://github.com/huilang-me/CF-Server-Monitor/forks)
 [![License](https://img.shields.io/badge/License-MIT-16a34a?style=flat-square)](#license)
 
-[Live Demo](https://demo.huilang.me/) · [API Reference](API.md) · [Go Agent Guide](https://github.com/huilang-me/cfsm-agent) · [Theme Development](theme-develop.md)
+[Live Demo](https://demo.huilang.me/) · [API Reference](API.md) · [Go Agent Guide](https://github.com/huilang-me/cfsm-agent) · [Theme Development](theme-develop.md) · [Theme AI Prompt](theme-ai-prompt.md)
 
 </div>
 
@@ -425,7 +425,10 @@ The project includes a built-in theme and supports:
 - Third-party GitHub tree theme URLs
 - Admin-only theme preview
 
-Third-party themes only proxy `index.html` and `assets/` from the theme repository. The admin panel always uses the built-in theme. See [theme-develop.md](theme-develop.md) for custom theme development.
+Third-party themes only proxy `index.html` and `assets/` from the theme repository. The admin panel always uses the built-in theme. For custom theme development, see:
+
+- [theme-ai-prompt.md](theme-ai-prompt.md): Theme development AI prompt — paste the whole block into an AI coding assistant; includes the core data flow, D1 consumption rules and a pre-delivery checklist (Chinese)
+- [theme-develop.md](theme-develop.md): Full API field reference and auth details
 
 ## Upgrade and Maintenance
 
@@ -588,6 +591,7 @@ CF-Server-Monitor/
 ├── test/                    # Local tests and mock data tools
 ├── API.md                   # REST / WebSocket API reference
 ├── theme-develop.md         # Third-party theme development
+├── theme-ai-prompt.md       # Theme development AI prompt (paste into AI)
 ├── wrangler.toml            # Local Wrangler configuration
 └── version.json             # Worker / Agent versions
 ```
@@ -671,6 +675,7 @@ The frontend may display Hong Kong, Macao, Taiwan, and country/region informatio
 - [API.md](API.md): REST API, WebSocket, auth, error codes, and data structures
 - [https://github.com/huilang-me/cfsm-agent](cfsm-agent): Go Agent configuration, upgrade, logs, and troubleshooting
 - [theme-develop.md](theme-develop.md): Third-party theme development
+- [theme-ai-prompt.md](theme-ai-prompt.md): Theme development AI prompt — paste it into an AI assistant to build themes that follow project rules
 - [test/README.md](test/README.md): Local mock data and testing workflow
 
 ## Community
