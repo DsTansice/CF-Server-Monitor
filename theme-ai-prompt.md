@@ -60,8 +60,8 @@ src/
 - WebSocket `batchUpdate` 结构：`updates[].samples[]`，指标对象按 `sample.data || sample.payload || sample.metrics` 读取。samples 是**增量**的：高频点只有 CPU/内存/Swap/网速；每次上报最后一个样本才携带报告级字段（磁盘、GPU、ping/loss、进程数等）。合并时对已知字段做覆盖式 merge，缺失字段保留旧值，不要整对象替换后把其他字段清成 undefined。
 - ping/loss 字段三态：`false`（或未返回）= 未配置/未取样，**不显示**；`null` = 本轮探测超时，可显示 "Timeout/超时"；`0` 是有效数据（含 0% 丢包），**必须正常显示**。不许把 `null` 从图例里隐藏，也不许把 `false` 画成 0。
 - 在线判定：`(Date.now() - last_updated) < 5 分钟`，用 `/api/servers` 的 `stats` 展示总数/在线/离线，不要自己重算一套不同口径。
-- `disk`（磁盘 IO）对象可能缺失（旧探针/全 0 不返回），缺失时不渲染磁盘 IO 图表。历史行里 `disk_read_bps` 等平铺字段仅为兼容，主题只读 `disk`。
-- GPU 只用 `gpu_info`；新版为数组 `[{id,name,info}]`，REST 历史里可能是同结构 JSON 字符串，两种都要兼容。
+- `disk`（磁盘 IO）对象可能缺失（全 0 或无有效数据时后端不返回），缺失时不渲染磁盘 IO 图表；磁盘 IO 只读 `disk` 对象。
+- GPU 只用 `gpu_info`，为数组 `[{id,name,info}]`；REST 历史行里为同结构的 JSON 字符串，需先 `JSON.parse` 再取用。
 - 流量单位是字节（B），网速字段单位 B/s，展示需自行格式化；`ram/disk` 单位 MB。
 - 显示名：CT/CU/CM/BGP 使用 `/api/config` 的 `custom_ct_name` 等自定义名称；自定义节点名用 `node_1_name`~`node_4_name`，缺省显示 `Node 1`~`Node 4`。
 - `price` 为 `"0"` 或 `"-1"` 表示免费，空白表示未设置；`is_hidden`、`ip_v4`、`ip_v6`、`auto_renewal` 等是字符串 `'0'|'1'`，不是布尔。
