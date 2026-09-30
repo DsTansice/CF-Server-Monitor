@@ -32,5 +32,10 @@ export const PING = {
 }
 
 export const STORAGE = {
-  VIEW_PREFERENCE: 'monitor_preferred_view'
+  THEME_PREFERENCE: 'theme_preference',
+  LANGUAGE_PREFERENCE: 'language_preference',
+  VIEW_PREFERENCE: 'monitor_preferred_view',
+  JWT_TOKEN: 'jwt_token',
+  TURNSTILE_TOKEN: 'turnstile_token',
+  TURNSTILE_VERIFIED: 'turnstile_verified'
 }

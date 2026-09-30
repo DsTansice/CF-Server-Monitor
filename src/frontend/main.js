@@ -4,6 +4,7 @@ import router from './router'
 import { ADMIN_ENTRY_URL, isAdminPath } from './router/adminEntryUrl'
 import './styles/main.css'
 import './styles/light.css'
+import { STORAGE } from './utils/constants'
 import { applyDefaultLanguage, currentLang, resolveLanguagePreference, translations } from './utils/i18n'
 import { http, DEFAULT_REQUEST_TIMEOUT_MS } from './utils/http'
 import { initConfig, hasMultipleApiBases } from './utils/config'
@@ -22,7 +23,7 @@ import {
 } from './utils/turnstile'
 
 const getTranslation = () => {
-  const lang = currentLang.value || resolveLanguagePreference(localStorage.getItem('language_preference') || 'auto')
+  const lang = currentLang.value || resolveLanguagePreference(localStorage.getItem(STORAGE.LANGUAGE_PREFERENCE) || 'auto')
   return translations[lang] || translations.en
 }
 
@@ -74,8 +75,8 @@ async function fetchConfig() {
 
     // 超时或 403：清掉可疑的 Turnstile 缓存，不带 header 重试走 bypass 路径
     if (result.error && (result.timeout || result.status === 403)) {
-      localStorage.removeItem('turnstile_token')
-      localStorage.removeItem('turnstile_verified')
+      localStorage.removeItem(STORAGE.TURNSTILE_TOKEN)
+      localStorage.removeItem(STORAGE.TURNSTILE_VERIFIED)
       result = await http.get('/api/config', { includeAuth: true, includeTurnstile: false, includeTurnstileVerified: false, autoRedirect: false, timeoutMs: DEFAULT_REQUEST_TIMEOUT_MS })
     }
 

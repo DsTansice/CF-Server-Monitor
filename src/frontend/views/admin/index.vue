@@ -586,14 +586,14 @@ import EditServerModal from './components/EditServerModal.vue'
 import BatchEditServersModal from './components/BatchEditServersModal.vue'
 import DeleteServerModal from './components/DeleteServerModal.vue'
 import CopyCommandModal from './components/CopyCommandModal.vue'
-import { adminApi, login, logout as apiLogout, upgradeDatabase, clearHistory, getApiBases, fetchConfig } from '../../utils/api'
-import { hasMultipleApiBases } from '../../utils/config.js'
+import { adminApi, login, logout as apiLogout, upgradeDatabase, clearHistory, fetchConfig } from '../../utils/api'
+import { hasMultipleApiBases, getApiBases } from '../../utils/config.js'
 import { copyTextToClipboard } from '../../utils/clipboard.js'
 import { t, useTranslation } from '../../utils/i18n'
 import { PING_NODE_FIELDS, validatePingNode } from '../../utils/pingNode.js'
 import { normalizeDisplayMode, resolveDisplayMode } from '../../utils/displayMode.js'
 import { applyMikusThemeOptions } from '../../utils/themeOptions.js'
-import { FRONTEND_WS_TIMEOUT_MINUTES_MAX, HISTORY } from '../../utils/constants.js'
+import { FRONTEND_WS_TIMEOUT_MINUTES_MAX, HISTORY, STORAGE } from '../../utils/constants.js'
 import { usePasswordVisibility } from '../../composables/usePasswordVisibility'
 import { useTurnstile } from './composables/useTurnstile'
 import { detectBillingCycle, detectCurrencySymbol, normalizeBillingCycle, normalizeCurrency, normalizePrice, renewExpireDateIfNeeded } from '../../utils/server.js'
@@ -1266,7 +1266,7 @@ const logout = async () => {
 }
 
 const checkLoginStatus = () => {
-  const token = localStorage.getItem('jwt_token')
+  const token = localStorage.getItem(STORAGE.JWT_TOKEN)
   return !!token || appConfig?.authorization === true
 }
 
@@ -1275,7 +1275,7 @@ const initAdmin = async () => {
   if (hasCreds) {
     isLoggedIn.value = true
     syncApiIndexQuery()
-    const savedTurnstileToken = localStorage.getItem('turnstile_token')
+    const savedTurnstileToken = localStorage.getItem(STORAGE.TURNSTILE_TOKEN)
     if (savedTurnstileToken) {
       turnstileToken.value = savedTurnstileToken
     }

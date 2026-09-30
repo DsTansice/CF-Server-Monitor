@@ -1,4 +1,5 @@
 import { ref, reactive, computed } from 'vue'
+import { STORAGE } from './constants'
 
 const translations = reactive({
   en: {
@@ -1072,7 +1073,7 @@ const translations = reactive({
   }
 })
 
-const LANGUAGE_STORAGE_KEY = 'language_preference'
+const LANGUAGE_STORAGE_KEY = STORAGE.LANGUAGE_PREFERENCE
 let defaultLanguage = 'auto'
 
 export const normalizeLanguagePreference = (lang, fallback = 'auto') => {
