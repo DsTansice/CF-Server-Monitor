@@ -1133,17 +1133,9 @@ export const applyDefaultLanguage = (lang) => {
   window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang: resolvedLang } }))
 }
 
-export const toggleLanguage = () => {
-  const newLang = currentLang.value === 'en' ? 'zh' : 'en'
-  setLanguage(newLang)
-  return newLang
-}
-
 export { currentLang, translations }
 
 export const useTranslation = () => {
   const trans = computed(() => translations[currentLang.value] || translations.en)
   return trans
 }
-
-export default { t, setLanguage, getLanguage, applyDefaultLanguage, toggleLanguage, currentLang, translations, useTranslation }
